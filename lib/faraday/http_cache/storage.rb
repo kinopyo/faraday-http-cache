@@ -96,10 +96,10 @@ module Faraday
         digest.update 'method'
         digest.update request[:method].to_s
         digest.update 'request_headers'
-        request[:request_headers].keys.sort.each do |key|
-          digest.update key.to_s
-          digest.update request[:request_headers][key].to_s
-        end
+        # request[:request_headers].keys.sort.each do |key|
+          # digest.update key.to_s
+          # digest.update request[:request_headers][key].to_s
+        # end
         digest.update 'url'
         digest.update request[:url].to_s
 
