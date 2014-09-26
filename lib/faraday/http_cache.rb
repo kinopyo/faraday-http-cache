@@ -39,6 +39,7 @@ module Faraday
   class HttpCache < Faraday::Middleware
     # Internal: valid options for the 'initialize' configuration Hash.
     VALID_OPTIONS = [:store, :serializer, :logger, :store_options, :shared_cache]
+    CLIENT_ERROR_STATUSES = 400..600
 
     # Public: Initializes a new HttpCache middleware.
     #
@@ -111,7 +112,7 @@ module Faraday
       end
 
       response.on_complete do
-        delete(@request) if should_delete?(@request[:method])
+        delete(@request) if should_delete?(env.status, @request[:method])
         log_request
       end
     end
@@ -208,8 +209,9 @@ module Faraday
     # cache entries for the same resource.
     #
     # Returns true or false.
-    def should_delete?(method)
-      method == :put || method == :delete || method == :post
+    def should_delete?(status, method)
+      !CLIENT_ERROR_STATUSES.include?(status) &&
+        %i(put patch delete post).include?(method)
     end
 
     # Internal: Tries to locate a valid response or forwards the call to the stack.
