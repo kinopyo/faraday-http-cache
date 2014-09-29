@@ -109,7 +109,6 @@ describe Faraday::HttpCache do
   end
 
   it 'caches multiple responses when the headers differ' do
-    skip 
     client.get('get', nil, 'HTTP_ACCEPT' => 'text/html')
     expect(client.get('get', nil, 'HTTP_ACCEPT' => 'text/html').body).to eq('1')
     expect(client.get('get', nil, 'HTTP_ACCEPT' => 'application/json').body).to eq('2')
